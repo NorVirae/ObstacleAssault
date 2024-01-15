@@ -31,7 +31,7 @@ public:
 	UPROPERTY(VisibleAnywhere, category = "Moving Platorm")
 	float distanceMoved = 0;
 
-	UPROPERTY(VisibleAnywhere, category = "Moving Platorm")
+	UPROPERTY(EditAnywhere, category = "Moving Platorm")
 	float moveDistance = 1100;
 
 	UPROPERTY(VisibleAnywhere, category = "Moving Platorm")

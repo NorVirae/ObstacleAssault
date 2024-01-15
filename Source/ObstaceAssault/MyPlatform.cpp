@@ -14,6 +14,7 @@ void AMyPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	startingLocation = GetActorLocation();
+	UE_LOG(LogTemp, Display, TEXT("Your Message"))
 }
 
 // Called every frame
