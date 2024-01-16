@@ -14,7 +14,8 @@ void AMyPlatform::BeginPlay()
 {
 	Super::BeginPlay();
 	startingLocation = GetActorLocation();
-	UE_LOG(LogTemp, Display, TEXT("Your Message"))
+	FString actorName = GetName();
+	UE_LOG(LogTemp, Display, TEXT("Actor: %s"), *actorName);
 }
 
 // Called every frame
@@ -24,24 +25,52 @@ void AMyPlatform::Tick(float DeltaTime)
 
 	// Move the platform
 	// --- Get Actors location
+
+	MovePlatform(DeltaTime);
+	RotatePlatform(DeltaTime);
+}
+
+void AMyPlatform::RotatePlatform(float DeltaTime)
+{
+
+	UE_LOG(LogTemp, Display, TEXT("Rtate platform %s"), *GetName());
+}
+
+void AMyPlatform::MovePlatform(float DeltaTime)
+{
 	FVector myActorsLocation = GetActorLocation();
 
 	// --- Add 1 to actors location x
 	myActorsLocation = myActorsLocation + (movingVelocity * DeltaTime);
 
 	// Get distance moved
-	distanceMoved = FVector::Dist(myActorsLocation, startingLocation);
+	distanceMoved = GetDistanceMoved(myActorsLocation);
 
 	// set Actors location
 	SetActorLocation(myActorsLocation);
 	// --- move actors location back if it has moved to much
 	// --- reverse the actor location movement
-	if (distanceMoved > moveDistance)
+	if (ShouldPlatformReturn(myActorsLocation))
 	{
+		FString actorName = GetName();
+		float overshot = distanceMoved - moveDistance;
+		UE_LOG(LogTemp, Display, TEXT("Actor: %s, overshoots: by = %f"), *actorName, overshot);
+
 		safeNormal = movingVelocity.GetSafeNormal();
 		FVector movingDirection = movingVelocity.GetSafeNormal();
 		startingLocation = startingLocation + movingDirection * moveDistance;
 		movingVelocity = -movingVelocity;
 		SetActorLocation(startingLocation);
 	}
+}
+
+
+bool AMyPlatform::ShouldPlatformReturn( FVector myActorsLocation){
+	return GetDistanceMoved(myActorsLocation) > moveDistance;
+}
+
+float AMyPlatform::GetDistanceMoved(FVector myActorsLocation){
+	distanceMoved = FVector::Dist(myActorsLocation, startingLocation);
+	return distanceMoved;
+
 }
