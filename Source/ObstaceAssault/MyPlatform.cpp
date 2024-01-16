@@ -32,45 +32,40 @@ void AMyPlatform::Tick(float DeltaTime)
 
 void AMyPlatform::RotatePlatform(float DeltaTime)
 {
-
-	UE_LOG(LogTemp, Display, TEXT("Rtate platform %s"), *GetName());
+	AddActorLocalRotation(rotationVelocity * DeltaTime);
+	// UE_LOG(LogTemp, Display, TEXT("Rotation velocity X: %f, Y: %f, Z: %f"), rotationVelocity.X, rotationVelocity, rotationVelocity.Z);
 }
 
 void AMyPlatform::MovePlatform(float DeltaTime)
 {
+
 	FVector myActorsLocation = GetActorLocation();
 
-	// --- Add 1 to actors location x
-	myActorsLocation = myActorsLocation + (movingVelocity * DeltaTime);
-
-	// Get distance moved
-	distanceMoved = GetDistanceMoved(myActorsLocation);
-
-	// set Actors location
-	SetActorLocation(myActorsLocation);
-	// --- move actors location back if it has moved to much
 	// --- reverse the actor location movement
 	if (ShouldPlatformReturn(myActorsLocation))
 	{
-		FString actorName = GetName();
-		float overshot = distanceMoved - moveDistance;
-		UE_LOG(LogTemp, Display, TEXT("Actor: %s, overshoots: by = %f"), *actorName, overshot);
-
 		safeNormal = movingVelocity.GetSafeNormal();
 		FVector movingDirection = movingVelocity.GetSafeNormal();
 		startingLocation = startingLocation + movingDirection * moveDistance;
 		movingVelocity = -movingVelocity;
 		SetActorLocation(startingLocation);
 	}
+	else
+	{
+		// --- Add 1 to actors location x
+		myActorsLocation = myActorsLocation + (movingVelocity * DeltaTime);
+		// set Actors location
+		SetActorLocation(myActorsLocation);
+	}
 }
 
-
-bool AMyPlatform::ShouldPlatformReturn( FVector myActorsLocation){
+bool AMyPlatform::ShouldPlatformReturn(FVector myActorsLocation) const
+{
 	return GetDistanceMoved(myActorsLocation) > moveDistance;
 }
 
-float AMyPlatform::GetDistanceMoved(FVector myActorsLocation){
-	distanceMoved = FVector::Dist(myActorsLocation, startingLocation);
+float AMyPlatform::GetDistanceMoved(FVector myActorsLocation) const
+{
+	float distanceMoved = FVector::Dist(myActorsLocation, startingLocation);
 	return distanceMoved;
-
 }

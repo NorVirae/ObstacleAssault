@@ -26,16 +26,15 @@ public:
 private:
 	void MovePlatform(float DeltaTime);
 	void RotatePlatform(float DeltaTime);
-	float GetDistanceMoved(FVector myActorsLocation);
-	bool ShouldPlatformReturn(FVector myActorsLocation);
+	float GetDistanceMoved(FVector myActorsLocation) const;
+	bool ShouldPlatformReturn(FVector myActorsLocation) const;
 
-		// velocity
+	// velocity
 	UPROPERTY(EditAnywhere, category = "Moving Platorm")
 	FVector movingVelocity = FVector(0, 40, 0);
 
-	// velocity
-	UPROPERTY(VisibleAnywhere, category = "Moving Platorm")
-	float distanceMoved = 0;
+	UPROPERTY(EditAnywhere, category = "Moving Platorm")
+	FRotator rotationVelocity;
 
 	UPROPERTY(EditAnywhere, category = "Moving Platorm")
 	float moveDistance = 1100;
